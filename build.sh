@@ -1,11 +1,12 @@
+#!/bin/bash
 if [ "$#" -ne 1 ]; then
   echo "Usage : ./build.sh lambdaName";
   exit 1;
 fi
 
-lambda=${1%/}; // # Removes trailing slashes
+lambda=${1%/};
 echo "Deploying $lambda";
-cd $lambda;
+cd $lambda || exit;
 if [ $? -eq 0 ]; then
   echo "...."
 else
@@ -13,7 +14,7 @@ else
   exit 1
 fi
 
-echo "nmp installing...";
+echo "npm installing...";
 npm install
 if [ $? -eq 0 ]; then
   echo "done";
@@ -37,7 +38,7 @@ rm archive.zip;
 echo "creating a new zip file"
 zip archive.zip *  -r -x .git/\* \*.sh tests/\* node_modules/aws-sdk/\* \*.zip
 
-echo "Uploading $lambda to $region";
+# echo "Uploading $lambda to $region";
 
 aws lambda update-function-code --function-name $lambda --zip-file fileb://archive.zip --publish
 
