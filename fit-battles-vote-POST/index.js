@@ -15,15 +15,16 @@ if (typeof client === 'undefined') {
 
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
-  conn.query('SELECT * FROM posts', [], function(err, result) {
+  const batchInsert = event.votes.map(vote => new Array(1).fill(vote))
+  conn.query('INSERT INTO votes (postId) VALUES ?', [batchInsert], function(err, result) {
     if (err) {
       callback(err)
     } else {
-      var battles = []
-      for (var i = 1; i < result.length; i+= 2) {
-        battles.push([result[i - 1], result[i]])
+      if (result.affectedRows) {
+        callback(null, { message: 'success' })
+      } else {
+        callback(null, { message: 'fail' })
       }
-      callback(null, battles)
     }
   })
 };

@@ -14,12 +14,12 @@ else
   exit 1
 fi
 
-echo "npm installing...";
-npm install
+echo "yarn installing...";
+yarn install
 if [ $? -eq 0 ]; then
   echo "done";
 else
-  echo "npm install failed";
+  echo "yarn install failed";
   exit 1;
 fi
 
